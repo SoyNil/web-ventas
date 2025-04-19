@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Productos</title>
+  <link rel="stylesheet" href="css/estilos.css" />
+
+  <!-- Firebase -->
+  <script defer src="/__/firebase/11.6.0/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/11.6.0/firebase-database-compat.js"></script>
+  <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+</head>
+<body>
+  <!-- Header con botones de sesión -->
+  <header class="header">
+    <div style="display: flex; gap: 10px; margin: 20px;" id="auth-buttons">
+      <button id="btn-login">Iniciar sesión</button>
+      <button id="btn-register">Registrarse</button>
+    </div>
+    
+    <div style="display: none; gap: 10px; margin: 20px;" id="user-buttons">
+      <button id="btn-perfil">Ver perfil</button>
+      <button id="btn-logout">Cerrar sesión</button>
+    </div>
+  </header>
+  <!-- Modal Iniciar Sesión -->
+  <div id="modal-login" class="modal">
+    <div class="modal-content">
+      <span class="close" data-close="modal-login">&times;</span>
+      <h2>Iniciar Sesión</h2>
+      <form id="login-form">
+        <input type="email" placeholder="Correo" required />
+        <input type="password" placeholder="Contraseña" required />
+        <button type="submit">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Registrarse -->
+  <div id="modal-register" class="modal">
+    <div class="modal-content">
+      <span class="close" data-close="modal-register">&times;</span>
+      <h2>Registrarse</h2>
+      <form id="register-form">
+        <input type="text" placeholder="Nombre completo" required />
+        <input type="email" placeholder="Correo" required />
+        <input type="password" placeholder="Contraseña" required />
+        <button type="submit">Crear Cuenta</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Botón para mostrar/ocultar formulario -->
+    <button id="btn-agregar">Agregar Producto</button>
+
+    <!-- Formulario oculto por defecto -->
+    <form id="form-producto" style="display: none;">
+      <input type="text" id="nombre" placeholder="Nombre" required />
+      <input type="text" id="descripcion" placeholder="Descripción" required />
+      <input type="number" id="precio" placeholder="Precio" required />
+      <input type="file" id="imagen" placeholder="Selecciona imagen" required />
+      <button type="submit">Agregar Producto</button>
+    </form>
+
+    <!-- Lista de productos -->
+    <div id="lista-productos"></div>
+  </div>
+
+  <!-- Script principal movido a carpeta "script" -->
+  <script src="script/scripts.js"></script>
+</body>
+</html>
