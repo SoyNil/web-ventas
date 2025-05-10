@@ -13,17 +13,30 @@
 </head>
 <body>
   <!-- Header con botones de sesión -->
-  <header class="header">
-    <div style="display: flex; gap: 10px; margin: 20px;" id="auth-buttons">
-      <button id="btn-login">Iniciar sesión</button>
+<header class="header">
+  <div class="header-container">
+    <h1>Web Productos</h1>
+  
+    <!-- Botones cuando NO hay sesión -->
+    <div class="session-buttons" id="auth-buttons">
+      <button id="btn-login">Iniciar Sesión</button>
       <button id="btn-register">Registrarse</button>
     </div>
-    
-    <div style="display: none; gap: 10px; margin: 20px;" id="user-buttons">
-      <button id="btn-perfil">Ver perfil</button>
-      <button id="btn-logout">Cerrar sesión</button>
+  
+    <!-- Botones cuando HAY sesión -->
+    <div class="session-buttons" id="user-buttons" style="display: none;">
+      <button id="btn-perfil">Ver Perfil</button>
+      <button id="btn-analisis">Análisis</button> <!-- Nuevo botón -->
+      <button id="btn-logout">Cerrar Sesión</button>
     </div>
-  </header>
+  
+    <!-- Ícono de Cesta -->
+    <div class="cesta-contenedor">
+      <button id="btn-cesta" title="Ver cesta">🛒</button>
+      <span id="contador-cesta" class="contador-cesta">0</span>
+    </div>
+  </div>
+</header>
   <!-- Modal Iniciar Sesión -->
   <div id="modal-login" class="modal">
     <div class="modal-content">
@@ -38,18 +51,26 @@
   </div>
 
   <!-- Modal Registrarse -->
-  <div id="modal-register" class="modal">
-    <div class="modal-content">
-      <span class="close" data-close="modal-register">&times;</span>
-      <h2>Registrarse</h2>
-      <form id="register-form">
-        <input type="text" placeholder="Nombre completo" required />
-        <input type="email" placeholder="Correo" required />
-        <input type="password" placeholder="Contraseña" required />
-        <button type="submit">Crear Cuenta</button>
-      </form>
-    </div>
+<div id="modal-register" class="modal">
+  <div class="modal-content">
+    <span class="close" data-close="modal-register">&times;</span>
+    <h2>Registrarse</h2>
+
+    <!-- Aquí aparecerá el mensaje de advertencia -->
+    <p id="mensaje-registro" style="color: red; font-size: 14px; margin-bottom: 10px;"></p>
+
+    <form id="register-form">
+      <input type="text" placeholder="Nombre completo" required />
+      <input type="email" placeholder="Correo" required />
+      <input type="password" placeholder="Contraseña" required />
+      <button type="submit">Crear Cuenta</button>
+    </form>
   </div>
+</div>
+<section id="perfil-usuario" style="display: none;">
+    <h2>Mis productos</h2>
+    <ul id="lista-perfil"></ul>
+</section>
 
   <div class="container">
     <!-- Botón para mostrar/ocultar formulario -->
@@ -66,8 +87,16 @@
 
     <!-- Lista de productos -->
     <div id="lista-productos"></div>
+</div>
   </div>
-
+  <!-- Modal Cesta -->
+  <div id="modal-cesta" class="modal">
+    <div class="modal-content">
+      <span class="close" data-close="modal-cesta">&times;</span>
+      <h2>Mi Cesta</h2>
+      <ul id="lista-cesta"></ul>
+    </div>
+  </div>
   <!-- Script principal movido a carpeta "script" -->
   <script src="script/scripts.js"></script>
 </body>

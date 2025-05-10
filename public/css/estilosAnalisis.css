@@ -1,0 +1,27 @@
+/* Botón Volver */
+#btn-volver {
+    background-color: #039be5;
+    color: white;
+    font-weight: bold;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#btn-volver:hover {
+    background-color: #0277bd;
+}
+
+/* Contenedor Power BI */
+#powerbi-report-container {
+    width: 100%;
+    height: 500px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+}

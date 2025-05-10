@@ -101,9 +101,9 @@ body {
 }
 
 .container {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 15px;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 15px;
 }
 
 /* Estilos para el formulario */
@@ -171,20 +171,32 @@ body {
 
 /* Estilos para los productos listados */
 #lista-productos {
-  margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start; /* Alinea productos desde la izquierda */
+    margin-top: 20px;
 }
 
 .producto {
-  background-color: #fff;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 15px;
+    width: 100%;
+    max-width: 250px; /* Máximo ancho para pantallas grandes */
+    min-width: 200px; /* Mínimo ancho para evitar que se encojan demasiado */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box; /* Asegura que padding no afecte el ancho */
 }
 
 .producto img {
-  max-width: 100%;
+  width: 100%;
   height: auto;
+  max-height: 200px;
+  object-fit: cover;
   border-radius: 5px;
 }
 
@@ -202,4 +214,208 @@ body {
 .producto strong {
   color: #ffa100;
   font-size: 16px;
+}
+
+#btn-cesta {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.producto button.agregar-carrito {
+  margin-top: 10px;
+  background-color: #ffa100;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cesta-contenedor {
+  position: relative;
+  display: inline-block;
+}
+
+.contador-cesta {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.item-cesta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    margin: 5px 0;
+}
+
+.item-cesta span {
+    flex-grow: 1;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre nombre, cantidad y precio */
+}
+
+.item-cesta strong {
+    font-weight: bold;
+    color: #333;
+}
+
+.item-cesta button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #e53935;
+    font-size: 16px;
+    padding: 5px;
+}
+
+#lista-cesta li:last-child {
+    border-bottom: none; /* Evitar borde en el último elemento */
+}
+
+#btn-pagar {
+    background-color: #039be5;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#btn-pagar:hover {
+    background-color: #0277bd;
+}
+
+.imagen-cesta {
+  width: 40px; /* Ajusta el tamaño de la imagen */
+  height: 40px;
+  object-fit: cover; /* Asegura que la imagen no se deforme */
+  margin-right: 10px; /* Espacio entre la imagen y el texto */
+}
+
+.producto-perfil {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.producto-perfil-contenido {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.imagen-perfil {
+    width: 100%;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.producto-perfil input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.acciones-perfil {
+    display: flex;
+    gap: 10px;
+}
+
+.acciones-perfil button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.guardar-cambios {
+    background-color: #039be5;
+    color: white;
+}
+
+.guardar-cambios:hover {
+    background-color: #0277bd;
+}
+
+.eliminar-producto {
+    background-color: #e53935;
+    color: white;
+}
+
+.eliminar-producto:hover {
+    background-color: #c62828;
+}
+
+#perfil-usuario {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#perfil-usuario h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#lista-perfil {
+    list-style: none;
+    padding: 0;
+}
+
+#lista-perfil li {
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+#lista-perfil li:last-child {
+    border-bottom: none;
+}
+
+#mensaje-registro {
+    color: #e53935;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Botón Análisis */
+#btn-analisis {
+    background-color: #039be5;
+    color: white;
+    font-weight: bold;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#btn-analisis:hover {
+    background-color: #0277bd;
 }
