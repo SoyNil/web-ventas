@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Análisis - Web Productos</title>
     <link rel="stylesheet" href="css/estilos.css" />
-    <link rel="stylesheet" href="css/estilosAnalisis.css" />
-    <!-- Biblioteca Power BI -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/powerbi-client/2.22.2/powerbi.min.js"></script>
+    <!-- Chart.js (UMD) -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 </head>
 <body>
     <!-- Header -->
@@ -23,12 +22,30 @@
     <!-- Contenedor principal -->
     <div class="container">
         <h2>Análisis de Datos</h2>
-        <div id="powerbi-report-container" style="width: 100%; height: 500px; border: 1px solid #ccc; border-radius: 5px;">
-            <p style="text-align: center; color: #555;">Cargando análisis...</p>
+        <div class="dashboard">
+            <!-- Gráfico: Ventas por Vendedor -->
+            <div class="chart-container">
+                <h3>Ventas por Vendedor</h3>
+                <canvas id="ventasPorVendedor"></canvas>
+            </div>
+            <!-- Gráfico: Productos Más Vendidos -->
+            <div class="chart-container">
+                <h3>Productos Más Vendidos</h3>
+                <canvas id="productosMasVendidos"></canvas>
+            </div>
+            <!-- Gráfico: Compras por Fecha -->
+            <div class="chart-container">
+                <h3>Compras por Fecha</h3>
+                <canvas id="comprasPorFecha"></canvas>
+            </div>
         </div>
     </div>
 
-    <!-- Script -->
-    <script src="script/scriptAnalisis.js"></script>
+    <!-- Firebase -->
+    <script defer src="/__/firebase/11.6.0/firebase-app-compat.js"></script>
+    <script defer src="/__/firebase/11.6.0/firebase-database-compat.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+    <!-- Script del Dashboard -->
+    <script defer src="script/scriptAnalisis.js"></script>
 </body>
 </html>

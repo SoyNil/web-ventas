@@ -1,3 +1,13 @@
+// Inicializar Firebase (asegúrate de que init.js ya llamó firebase.initializeApp)
+let db;
+try {
+    db = firebase.database();
+} catch (error) {
+    console.error("Error al inicializar Firebase:", error);
+    document.querySelector(".dashboard").innerHTML =
+        "<p style='text-align: center; color: #e53935;'>Error al conectar con la base de datos.</p>";
+}
+
 // Evento para el botón Volver
 document.getElementById("btn-volver").addEventListener("click", () => {
     window.location.href = "index.html";
@@ -11,70 +21,177 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "index.html";
         return;
     }
-    // Llamar a la función para cargar el reporte de Power BI
-    embedPowerBiReport();
+    if (!db) {
+        document.querySelector(".dashboard").innerHTML =
+            "<p style='text-align: center; color: #e53935;'>Error al conectar con la base de datos.</p>";
+        return;
+    }
+    cargarDatosDashboard();
 });
 
-// Configuración de Power BI (reemplaza con tus valores reales)
-const powerBiConfig = {
-    reportId: "TU_REPORT_ID", // Obtén desde Power BI Service
-    workspaceId: "TU_WORKSPACE_ID", // Obtén desde Power BI Service
-    embedUrl: "https://app.powerbi.com/reportEmbed?reportId=TU_REPORT_ID",
-    accessToken: "", // Se generará dinámicamente
-};
-
-// Función para obtener el token de acceso (requiere backend)
-async function getPowerBiAccessToken() {
+// Función para cargar datos y crear gráficos
+function cargarDatosDashboard() {
     try {
-        // Llamada al backend para obtener el token
-        const response = await fetch("TU_BACKEND_ENDPOINT", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                clientId: "TU_CLIENT_ID",
-                clientSecret: "TU_CLIENT_SECRET",
-                tenantId: "TU_TENANT_ID",
-            }),
+        db.ref("ventas").once("value", (snapshotVentas) => {
+            db.ref("compras").once("value", (snapshotCompras) => {
+                const ventas = snapshotVentas.val() || {};
+                const compras = snapshotCompras.val() || {};
+
+                if (!Object.keys(ventas).length && !Object.keys(compras).length) {
+                    document.querySelector(".dashboard").innerHTML =
+                        "<p style='text-align: center; color: #e53935;'>No hay datos disponibles para mostrar.</p>";
+                    return;
+                }
+
+                const ventasPorVendedor = procesarVentasPorVendedor(ventas);
+                const productosMasVendidos = procesarProductosMasVendidos(ventas);
+                const comprasPorFecha = procesarComprasPorFecha(compras);
+
+                crearGraficoVentasPorVendedor(ventasPorVendedor);
+                crearGraficoProductosMasVendidos(productosMasVendidos);
+                crearGraficoComprasPorFecha(comprasPorFecha);
+            }, (error) => {
+                console.error("Error al cargar compras:", error);
+                document.querySelector(".dashboard").innerHTML =
+                    "<p style='text-align: center; color: #e53935;'>Error al cargar los datos.</p>";
+            });
+        }, (error) => {
+            console.error("Error al cargar ventas:", error);
+            document.querySelector(".dashboard").innerHTML =
+                "<p style='text-align: center; color: #e53935;'>Error al cargar los datos.</p>";
         });
-        const data = await response.json();
-        return data.accessToken;
     } catch (error) {
-        console.error("Error al obtener el token de Power BI:", error);
-        throw error;
+        console.error("Error en cargarDatosDashboard:", error);
+        document.querySelector(".dashboard").innerHTML =
+            "<p style='text-align: center; color: #e53935;'>Error al cargar los datos.</p>";
     }
 }
 
-// Función para embeber el reporte de Power BI
-async function embedPowerBiReport() {
-    try {
-        // Obtener token de acceso
-        powerBiConfig.accessToken = await getPowerBiAccessToken();
-
-        // Configuración del reporte
-        const embedConfig = {
-            type: "report",
-            id: powerBiConfig.reportId,
-            embedUrl: powerBiConfig.embedUrl,
-            accessToken: powerBiConfig.accessToken,
-            tokenType: powerbi.models.TokenType.Aad,
-            settings: {
-                panes: {
-                    filters: { expanded: false, visible: false },
-                },
-            },
-        };
-
-        // Embeber el reporte
-        const reportContainer = document.getElementById("powerbi-report-container");
-        const report = powerbi.embed(reportContainer, embedConfig);
-
-        // Manejar eventos (opcional)
-        report.on("loaded", () => console.log("Reporte cargado"));
-        report.on("error", (event) => console.error("Error:", event.detail));
-    } catch (error) {
-        console.error("Error al embeber el reporte:", error);
-        alert("No se pudo cargar el análisis. Intenta de nuevo.");
-        document.getElementById("powerbi-report-container").innerHTML =
-            "<p style='text-align: center; color: #e53935;'>Error al cargar el análisis.</p>";
+// Procesar datos: Ventas por vendedor
+function procesarVentasPorVendedor(ventas) {
+    const resultado = {};
+    for (let id in ventas) {
+        const venta = ventas[id];
+        const vendedor = venta.vendedor || "Desconocido";
+        const total = parseFloat(venta.total) || 0;
+        resultado[vendedor] = (resultado[vendedor] || 0) + total;
     }
+    return resultado;
+}
+
+// Procesar datos: Productos más vendidos
+function procesarProductosMasVendidos(ventas) {
+    const resultado = {};
+    for (let id in ventas) {
+        const venta = ventas[id];
+        if (venta.productos && Array.isArray(venta.productos)) {
+            venta.productos.forEach((producto) => {
+                const nombre = producto.nombre;
+                const cantidad = producto.cantidad || 1;
+                resultado[nombre] = (resultado[nombre] || 0) + cantidad;
+            });
+        }
+    }
+    return resultado;
+}
+
+// Procesar datos: Compras por fecha
+function procesarComprasPorFecha(compras) {
+    const resultado = {};
+    for (let id in compras) {
+        const compra = compras[id];
+        if (compra.fecha) {
+            const fecha = new Date(compra.fecha).toLocaleDateString("es-ES", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+            });
+            const total = parseFloat(compra.total) || 0;
+            resultado[fecha] = (resultado[fecha] || 0) + total;
+        }
+    }
+    return resultado;
+}
+
+// Gráfico: Ventas por Vendedor (Barras)
+function crearGraficoVentasPorVendedor(data) {
+    const ctx = document.getElementById("ventasPorVendedor").getContext("2d");
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: Object.keys(data),
+            datasets: [
+                {
+                    label: "Total Ventas (S/)",
+                    data: Object.values(data),
+                    backgroundColor: "rgba(3, 155, 229, 0.6)",
+                    borderColor: "#039be5",
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, title: { display: true, text: "Total (S/)" } },
+                x: { title: { display: true, text: "Vendedor" } },
+            },
+        },
+    });
+}
+
+// Gráfico: Productos Más Vendidos (Pastel)
+function crearGraficoProductosMasVendidos(data) {
+    const ctx = document.getElementById("productosMasVendidos").getContext("2d");
+    new Chart(ctx, {
+        type: "pie",
+        data: {
+            labels: Object.keys(data),
+            datasets: [
+                {
+                    label: "Cantidad Vendida",
+                    data: Object.values(data),
+                    backgroundColor: [
+                        "rgba(3, 155, 229, 0.6)",
+                        "rgba(255, 161, 0, 0.6)",
+                        "rgba(229, 57, 53, 0.6)",
+                        "rgba(76, 175, 80, 0.6)",
+                    ],
+                    borderColor: ["#039be5", "#ffa100", "#e53935", "#4caf50"],
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+        },
+    });
+}
+
+// Gráfico: Compras por Fecha (Líneas)
+function crearGraficoComprasPorFecha(data) {
+    const ctx = document.getElementById("comprasPorFecha").getContext("2d");
+    new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: Object.keys(data).sort(),
+            datasets: [
+                {
+                    label: "Total Compras (S/)",
+                    data: Object.values(data),
+                    backgroundColor: "rgba(255, 161, 0, 0.6)",
+                    borderColor: "#ffa100",
+                    borderWidth: 2,
+                    fill: false,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, title: { display: true, text: "Total (S/)" } },
+                x: { title: { display: true, text: "Fecha" } },
+            },
+        },
+    });
 }
